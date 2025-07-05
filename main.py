@@ -27,6 +27,12 @@ async def graficar(request: Request):
     plt.savefig(filename, bbox_inches="tight")
     return FileResponse(filename, media_type="image/png", filename="radar.png")
 
+# Ruta básica de prueba
 @app.get("/")
-def home():
-    return {"mensaje": "Radar Chart activo"}
+def root():
+    return {"mensaje": "API Radar Chart está viva"}
+
+# Ruta especial para UptimeRobot
+@app.api_route("/ping", methods=["GET", "HEAD"])
+def ping():
+    return {"status": "ok"}
