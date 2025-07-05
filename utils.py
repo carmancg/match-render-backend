@@ -22,50 +22,59 @@ def calcular_atributos_partido(
 
     return [round(attack, 2), round(possession, 2), round(defense, 2), round(pressing, 2), round(speed, 2)]
 
-def graficar_radar_rango_promedio_minimalista(home_team, away_team, teams_data):
+
+def graficar_radar_rango_promedio_minimalista(team_a_name, team_b_name, teams_data):
     labels = ['Attack', 'Possession', 'Defense', 'Pressing', 'Speed']
     num_vars = len(labels)
     angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
     angles += angles[:1]
 
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    fig, ax = plt.subplots(figsize=(7, 7), subplot_kw=dict(polar=True))
 
-    def procesar_equipo(data, color, nombre):
-        stats = []
-        for i in range(0, len(data), 2):
-            partido = data[i]
-            rival = data[i+1]
-            atributos = calcular_atributos_partido(*(partido + rival))
-            stats.append(atributos)
+    def calcular_min_max_avg(team_data):
+        valores = []
+        for i in range(0, len(team_data), 2):
+            atributos = calcular_atributos_partido(*(team_data[i] + team_data[i+1]))
+            valores.append(atributos)
+        valores = np.array(valores)
+        min_vals = valores.min(axis=0).tolist()
+        max_vals = valores.max(axis=0).tolist()
+        avg_vals = valores.mean(axis=0).tolist()
+        return (
+            min_vals + [min_vals[0]],
+            max_vals + [max_vals[0]],
+            avg_vals + [avg_vals[0]]
+        )
 
-        stats = np.array(stats)
-        min_vals = stats.min(axis=0).tolist() + [stats.min(axis=0)[0]]
-        max_vals = stats.max(axis=0).tolist() + [stats.max(axis=0)[0]]
-        avg_vals = stats.mean(axis=0).tolist() + [stats.mean(axis=0)[0]]
+    min_a, max_a, avg_a = calcular_min_max_avg(teams_data[0])
+    min_b, max_b, avg_b = calcular_min_max_avg(teams_data[1])
 
-        ax.plot(angles, max_vals, color=color, linewidth=0.5, linestyle='dashed')
-        ax.plot(angles, min_vals, color=color, linewidth=0.5, linestyle='dashed')
-        ax.fill(angles, max_vals, color=color, alpha=0.15)
-        ax.fill(angles, min_vals, color=color, alpha=1, zorder=2)
-        ax.plot(angles, avg_vals, color=color, linewidth=2, label=nombre)
+    # Team A
+    ax.fill_between(angles, min_a, max_a, color='skyblue', alpha=0.2, label=f'{team_a_name}')
+    ax.plot(angles, max_a, color='skyblue', linewidth=0.1)
+    ax.plot(angles, min_a, color='skyblue', linewidth=0.1)
+    ax.plot(angles, avg_a, color='deepskyblue', linestyle='-', linewidth=1.5, label=f'{team_a_name} (avg)')
 
-    procesar_equipo(teams_data[0], 'skyblue', home_team)
-    procesar_equipo(teams_data[1], 'coral', away_team)
+    # Team B
+    ax.fill_between(angles, min_b, max_b, color='coral', alpha=0.2, label=f'{team_b_name}')
+    ax.plot(angles, max_b, color='coral', linewidth=0.1)
+    ax.plot(angles, min_b, color='coral', linewidth=0.1)
+    ax.plot(angles, avg_b, color='orangered', linestyle='-', linewidth=1.5, label=f'{team_b_name} (avg)')
 
+    # Estética minimalista
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
-    ax.set_thetagrids(np.degrees(angles[:-1]), labels)
+    ax.set_thetagrids(np.degrees(angles[:-1]), labels, fontsize=11)
 
-    ax.set_rgrids([])      # sin grillas radiales
-    ax.set_yticklabels([]) # sin etiquetas radiales
-    ax.set_xticks(angles[:-1])
-    ax.grid(False)
-    ax.set_frame_on(False)
+    ax.set_yticklabels([])        # ❌ sin etiquetas radiales
+    ax.set_rgrids([])             # ❌ sin líneas de grilla radial
+    ax.set_xticks(angles[:-1])    # ✅ mantener etiquetas de features
+    ax.grid(False)                # ❌ sin grid
+    ax.set_frame_on(False)        # ❌ sin borde polar
 
     for spine in ax.spines.values():
-        spine.set_visible(True)
-        spine.set_color('black')
-        spine.set_linewidth(1)
+        spine.set_visible(False)
 
-    ax.legend(loc='upper right')
+    ax.legend(loc='upper right', bbox_to_anchor=(1.35, 1.1))
     plt.tight_layout()
+    plt.show()
