@@ -44,11 +44,11 @@ def landing_page():
     <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>⚽ Radar Chart API</title>
+        <title>⚽ Match Render API</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
-                background: url('https://images.unsplash.com/photo-1587394521422-2cce6d0d5f12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+                background: url('https://imgs.search.brave.com/G89GFQPYKPCXOczttHmUC7VrQR9gKxavBl9BUJU1CCY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvNTc4/NzAxMTA5L3ZlY3Rv/ci9zdGFkaXVtLWxp/Z2h0cy5qcGc_cz02/MTJ4NjEyJnc9MCZr/PTIwJmM9dHlHNEZz/Z2hOYkdJa2VLZ3d0/Q3RGSUczZDljU2NS/RGViREdqNl9ZcUdR/Zz0') no-repeat center center fixed;
                 background-size: cover;
                 color: white;
                 text-align: center;
@@ -78,11 +78,11 @@ def landing_page():
     </head>
     <body>
         <div class="container">
-            <h1>🏟️ Radar Chart API</h1>
+            <h1>🏟️ Match Render API</h1>
             <p>📊 Visualización táctica de rendimiento futbolístico</p>
             <p>🔧 Desarrollado con <strong>FastAPI + Python + Matplotlib</strong></p>
             <p>⚙️ Endpoint: <code>POST /graficar</code></p>
-            <p>🔗 <a href="https://github.com/tuusuario/radar-api" target="_blank">Ver en GitHub</a></p>
+            <p>🔗 <a href="https://github.com/carmancg/match-render-backend" target="_blank">Ver en GitHub</a></p>
         </div>
     </body>
     </html>
