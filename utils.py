@@ -1,5 +1,3 @@
-# Reejecutamos el código tras el reset del entorno
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -39,6 +37,8 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     colores = ['skyblue', 'coral']
     features_por_equipo = [[], []]
 
+    leyendas = []
+
     for equipo_id in [0, 1]:
         for j in range(0, 6, 2):
             stats = calcular_atributos_partido(*(teams_data[equipo_id][j] + teams_data[1 - equipo_id][j + 1]))
@@ -50,10 +50,10 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
             rival_stats_c = cerrar(rival_stats)
 
             ax = axs[j // 2, equipo_id]
-            ax.plot(angles, partido_c, color=colores[equipo_id], linewidth=2)
+            ax.plot(angles, partido_c, color=colores[equipo_id], linewidth=2, label=team_a_name if equipo_id == 0 else team_b_name)
             ax.fill(angles, partido_c, color=colores[equipo_id], alpha=0.2)
 
-            ax.plot(angles, rival_stats_c, color='gray', linewidth=1.5)
+            ax.plot(angles, rival_stats_c, color='gray', linewidth=1, label="Rival")
             ax.fill(angles, rival_stats_c, color='gray', alpha=0.2)
 
             ax.set_xticks(angles[:-1])
@@ -63,6 +63,8 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
             ax.spines['polar'].set_color('gray')
             ax.spines['polar'].set_linewidth(0.2)
 
+            ax.legend(loc='upper right', fontsize=6, frameon=False)
+
         # Rango + Promedio (Fila 4)
         data = np.array(features_por_equipo[equipo_id])
         mins = cerrar(np.min(data, axis=0).tolist())
@@ -70,9 +72,9 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
         proms = cerrar(np.mean(data, axis=0).tolist())
 
         ax = axs[3, equipo_id]
-        ax.plot(angles, mins, color=colores[equipo_id], linewidth=0.2)
-        ax.plot(angles, maxs, color=colores[equipo_id], linewidth=0.2)
-        ax.plot(angles, proms, color=colores[equipo_id], linewidth=2)
+        ax.plot(angles, mins, color=colores[equipo_id], linewidth=0.2, label="Min")
+        ax.plot(angles, maxs, color=colores[equipo_id], linewidth=0.2, label="Max")
+        ax.plot(angles, proms, color=colores[equipo_id], linewidth=2, label="Avg")
         ax.fill_between(angles, mins, maxs, color=colores[equipo_id], alpha=0.2)
 
         ax.set_xticks(angles[:-1])
@@ -81,7 +83,8 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
         ax.grid(color='gray', linewidth=0.2)
         ax.spines['polar'].set_color('gray')
         ax.spines['polar'].set_linewidth(0.2)
-        ax.set_title(" ", fontsize=10)
+
+        ax.legend(loc='upper right', fontsize=6, frameon=False)
 
     # Comparativo final
     fig_comp, ax_comp = plt.subplots(figsize=(4, 4), subplot_kw=dict(polar=True))
@@ -91,10 +94,13 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
         maxs = cerrar(np.max(data, axis=0).tolist())
         proms = cerrar(np.mean(data, axis=0).tolist())
 
-        ax_comp.plot(angles, mins, color=colores[equipo_id], linewidth=0.2)
-        ax_comp.plot(angles, maxs, color=colores[equipo_id], linewidth=0.2)
-        ax_comp.plot(angles, proms, color=colores[equipo_id], linewidth=2)
-        ax_comp.fill_between(angles, mins, maxs, color=colores[equipo_id], alpha=0.2)
+        color = colores[equipo_id]
+        label_prefix = team_a_name if equipo_id == 0 else team_b_name
+
+        ax_comp.plot(angles, mins, color=color, linewidth=0.2, label=f"{label_prefix} Min")
+        ax_comp.plot(angles, maxs, color=color, linewidth=0.2, label=f"{label_prefix} Max")
+        ax_comp.plot(angles, proms, color=color, linewidth=1.5, label=f"{label_prefix} Avg")
+        ax_comp.fill_between(angles, mins, maxs, color=color, alpha=0.2)
 
     ax_comp.set_xticks(angles[:-1])
     ax_comp.set_xticklabels(etiquetas)
@@ -102,7 +108,7 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     ax_comp.grid(color='gray', linewidth=0.2)
     ax_comp.spines['polar'].set_color('gray')
     ax_comp.spines['polar'].set_linewidth(0.2)
-    ax_comp.set_title(" ", fontsize=10)
+    ax_comp.legend(loc='upper right', fontsize=6, frameon=False)
 
     plt.tight_layout()
     plt.show()
