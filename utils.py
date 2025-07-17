@@ -33,11 +33,11 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     def cerrar(valores):
         return valores + valores[:1]
 
-    fig, axs = plt.subplots(4, 2, figsize=(10, 16), subplot_kw=dict(polar=True))
     colores = ['skyblue', 'coral']
     features_por_equipo = [[], []]
 
-    leyendas = []
+    # Subplots: 5 filas x 2 columnas (3 partidos + 1 rango + 1 comparativo)
+    fig, axs = plt.subplots(5, 2, figsize=(12, 20), subplot_kw=dict(polar=True))
 
     for equipo_id in [0, 1]:
         for j in range(0, 6, 2):
@@ -86,8 +86,8 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
 
         ax.legend(loc='upper right', fontsize=6, frameon=False)
 
-    # Comparativo final
-    fig_comp, ax_comp = plt.subplots(figsize=(4, 4), subplot_kw=dict(polar=True))
+    # Comparativo en axs[4, 0] ocupando ambos espacios
+    ax_comp = fig.add_subplot(5, 1, 5, polar=True)
     for equipo_id in [0, 1]:
         data = np.array(features_por_equipo[equipo_id])
         mins = cerrar(np.min(data, axis=0).tolist())
@@ -111,4 +111,3 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     ax_comp.legend(loc='upper right', fontsize=6, frameon=False)
 
     plt.tight_layout()
-    plt.show()
