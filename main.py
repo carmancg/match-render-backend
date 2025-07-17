@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import matplotlib.pyplot as plt
 import uuid
-from utils import graficar_radar_rango_promedio_minimalista
+from utils import graficar_5_radares_datos_crudos
 
 app = FastAPI()
 
@@ -20,10 +20,10 @@ async def graficar(request: Request):
     data = await request.json()
     team_a_name = data["team_a_name"]
     team_b_name = data["team_b_name"]
-    teams_data = data["teams_data"]  # formato tipo manu_ast
+    teams_data = data["teams_data"]  # Formato tipo [[a1, ar1, a2, ar2, a3, ar3], [b1, br1, b2, br2, b3, br3]]
 
     filename = f"{uuid.uuid4()}.png"
-    graficar_radar_rango_promedio_minimalista(team_a_name, team_b_name, teams_data)
+    graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name)
     plt.savefig(filename, bbox_inches="tight")
     return FileResponse(filename, media_type="image/png", filename="radar.png")
 
@@ -31,7 +31,6 @@ async def graficar(request: Request):
 def home():
     return {"mensaje": "Radar Chart activo"}
 
-# Ruta especial para UptimeRobot
 @app.api_route("/ping", methods=["GET", "HEAD"])
 def ping():
     return {"status": "ok"}
