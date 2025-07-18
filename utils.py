@@ -24,6 +24,7 @@ def calcular_atributos_partido(
     return [round(attack, 2), round(possession, 2), round(defense, 2),
             round(pressing, 2), round(speed, 2)]
 
+
 def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     etiquetas = ['Attack', 'Possession', 'Defense', 'Pressing', 'Speed']
     num_vars = len(etiquetas)
@@ -33,11 +34,9 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     def cerrar(valores):
         return valores + valores[:1]
 
+    fig, axs = plt.subplots(4, 2, figsize=(10, 16), subplot_kw=dict(polar=True))
     colores = ['skyblue', 'coral']
     features_por_equipo = [[], []]
-
-    # Subplots: 5 filas x 2 columnas (3 partidos + 1 rango + 1 comparativo)
-    fig, axs = plt.subplots(5, 2, figsize=(12, 20), subplot_kw=dict(polar=True))
 
     for equipo_id in [0, 1]:
         for j in range(0, 6, 2):
@@ -62,7 +61,6 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
             ax.grid(color='gray', linewidth=0.2)
             ax.spines['polar'].set_color('gray')
             ax.spines['polar'].set_linewidth(0.2)
-
             ax.legend(loc='upper right', fontsize=6, frameon=False)
 
         # Rango + Promedio (Fila 4)
@@ -83,11 +81,12 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
         ax.grid(color='gray', linewidth=0.2)
         ax.spines['polar'].set_color('gray')
         ax.spines['polar'].set_linewidth(0.2)
-
         ax.legend(loc='upper right', fontsize=6, frameon=False)
 
-    # Comparativo en axs[4, 0] ocupando ambos espacios
-    ax_comp = fig.add_subplot(5, 1, 5, polar=True)
+    # Comparativo final: una figura independiente sin subplots vacíos
+    fig_comp = plt.figure(figsize=(5, 5))
+    ax_comp = plt.subplot(111, polar=True)
+
     for equipo_id in [0, 1]:
         data = np.array(features_por_equipo[equipo_id])
         mins = cerrar(np.min(data, axis=0).tolist())
@@ -111,3 +110,5 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     ax_comp.legend(loc='upper right', fontsize=6, frameon=False)
 
     plt.tight_layout()
+    plt.savefig("grafica.png", bbox_inches="tight")  # Solo si estás usando localmente
+    plt.close('all')
