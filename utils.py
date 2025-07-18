@@ -24,8 +24,7 @@ def calcular_atributos_partido(
     return [round(attack, 2), round(possession, 2), round(defense, 2),
             round(pressing, 2), round(speed, 2)]
 
-
-def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name, filename):
+def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     etiquetas = ['Attack', 'Possession', 'Defense', 'Pressing', 'Speed']
     num_vars = len(etiquetas)
     angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
@@ -34,9 +33,11 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name, filena
     def cerrar(valores):
         return valores + valores[:1]
 
-    fig, axs = plt.subplots(4, 2, figsize=(10, 16), subplot_kw=dict(polar=True))
     colores = ['skyblue', 'coral']
     features_por_equipo = [[], []]
+
+    fig, axs = plt.subplots(5, 2, figsize=(10, 20), subplot_kw=dict(polar=True))
+    axs = axs.reshape(5, 2)
 
     for equipo_id in [0, 1]:
         for j in range(0, 6, 2):
@@ -63,7 +64,7 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name, filena
             ax.spines['polar'].set_linewidth(0.2)
             ax.legend(loc='upper right', fontsize=6, frameon=False)
 
-        # Rango + Promedio (Fila 4)
+        # Rango + Promedio
         data = np.array(features_por_equipo[equipo_id])
         mins = cerrar(np.min(data, axis=0).tolist())
         maxs = cerrar(np.max(data, axis=0).tolist())
@@ -83,9 +84,9 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name, filena
         ax.spines['polar'].set_linewidth(0.2)
         ax.legend(loc='upper right', fontsize=6, frameon=False)
 
-    # Comparativa final
-    fig_comp = plt.figure(figsize=(5, 5))
-    ax_comp = plt.subplot(111, polar=True)
+    # Comparativo final (posición 5, columna centralizada usando axs[4, 0])
+    ax = axs[4, 0]
+    ax.set_position([0.25, 0.05, 0.5, 0.25])  # Ajusta el tamaño y posición
 
     for equipo_id in [0, 1]:
         data = np.array(features_por_equipo[equipo_id])
@@ -96,19 +97,21 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name, filena
         color = colores[equipo_id]
         label_prefix = team_a_name if equipo_id == 0 else team_b_name
 
-        ax_comp.plot(angles, mins, color=color, linewidth=0.2, label=f"{label_prefix} Min")
-        ax_comp.plot(angles, maxs, color=color, linewidth=0.2, label=f"{label_prefix} Max")
-        ax_comp.plot(angles, proms, color=color, linewidth=1.5, label=f"{label_prefix} Avg")
-        ax_comp.fill_between(angles, mins, maxs, color=color, alpha=0.2)
+        ax.plot(angles, mins, color=color, linewidth=0.2, label=f"{label_prefix} Min")
+        ax.plot(angles, maxs, color=color, linewidth=0.2, label=f"{label_prefix} Max")
+        ax.plot(angles, proms, color=color, linewidth=1.5, label=f"{label_prefix} Avg")
+        ax.fill_between(angles, mins, maxs, color=color, alpha=0.2)
 
-    ax_comp.set_xticks(angles[:-1])
-    ax_comp.set_xticklabels(etiquetas)
-    ax_comp.set_yticklabels([])
-    ax_comp.grid(color='gray', linewidth=0.2)
-    ax_comp.spines['polar'].set_color('gray')
-    ax_comp.spines['polar'].set_linewidth(0.2)
-    ax_comp.legend(loc='upper right', fontsize=6, frameon=False)
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(etiquetas)
+    ax.set_yticklabels([])
+    ax.grid(color='gray', linewidth=0.2)
+    ax.spines['polar'].set_color('gray')
+    ax.spines['polar'].set_linewidth(0.2)
+    ax.legend(loc='upper center', fontsize=6, frameon=False, bbox_to_anchor=(0.5, -0.1), ncol=2)
+
+    # Elimina subplot [4, 1] que sobra para evitar radar vacío
+    fig.delaxes(axs[4, 1])
 
     plt.tight_layout()
-    plt.savefig(filename, bbox_inches="tight")
-    plt.close('all')
+    plt.show()
