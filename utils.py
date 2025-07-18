@@ -25,7 +25,7 @@ def calcular_atributos_partido(
             round(pressing, 2), round(speed, 2)]
 
 
-def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
+def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name, filename):
     etiquetas = ['Attack', 'Possession', 'Defense', 'Pressing', 'Speed']
     num_vars = len(etiquetas)
     angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
@@ -83,7 +83,7 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
         ax.spines['polar'].set_linewidth(0.2)
         ax.legend(loc='upper right', fontsize=6, frameon=False)
 
-    # Comparativo final: una figura independiente sin subplots vacíos
+    # Comparativa final
     fig_comp = plt.figure(figsize=(5, 5))
     ax_comp = plt.subplot(111, polar=True)
 
@@ -110,5 +110,5 @@ def graficar_5_radares_datos_crudos(teams_data, team_a_name, team_b_name):
     ax_comp.legend(loc='upper right', fontsize=6, frameon=False)
 
     plt.tight_layout()
-    plt.savefig("grafica.png", bbox_inches="tight")  # Solo si estás usando localmente
+    plt.savefig(filename, bbox_inches="tight")
     plt.close('all')
